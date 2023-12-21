@@ -1,0 +1,36 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}",
+                "/lib/modules/6.2.0-39-generic/build/include",
+                "/lib/modules/6.2.0-39-generic/build/include/uapi",
+                "/lib/modules/6.2.0-39-generic/build/include/generated",
+                "/lib/modules/6.2.0-39-generic/build/arch/x86/include",
+                "/lib/modules/6.2.0-39-generic/build/arch/x86/include/uapi",
+                "/lib/modules/6.2.0-39-generic/build/arch/x86/include/generated"
+            ],
+            "defines": [
+                "__KERNEL__",
+                "KBUILD_MODNAME=\"touchpad_gestures\""
+            ],
+            "intelliSenseMode": "linux-clang-x64",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}",
+                    "/lib/modules/6.2.0-39-generic/build/include",
+                    "/lib/modules/6.2.0-39-generic/build/mm",
+                    "/lib/modules/6.2.0-39-generic/build/fs",
+                    "/lib/modules/6.2.0-39-generic/build/kernel"
+                ],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": ""
+            },
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c99",
+            "cppStandard": "c++17"
+        }
+    ],
+    "version": 4
+}
