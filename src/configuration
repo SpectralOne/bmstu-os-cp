@@ -1,0 +1,6 @@
+/usr/bin/light_up.sh
+/usr/bin/light_down.sh
+/usr/bin/run_gnome_calc.sh
+/usr/bin/run_yed.sh
+/usr/bin/run_texstudio.sh
+/usr/bin/run_nautilus.sh
