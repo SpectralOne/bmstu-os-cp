@@ -1,40 +1,41 @@
 \section{Конструкторский раздел}
 
-\subsection{Требование к ПО}
+\subsection{Алгоритм работы обработчика устройства ввода}
 
-Необходимо реализовать загружаемый модуль ядра, считывать перемещение пальцев по тачпаду и выполнять заданные действия системы. Действия необходимо поместить в файл ФС \texttt{proc}.
-
-\subsection{IDEF0}
-
-На рисунке \ref{fig:idef} изображена диаграмма IDEF0 требуемой задачи.
-
-\begin{figure}[h!btp]
-	\centering
-	\includegraphics[width=0.9\textwidth]{inc/idef.pdf}
-	\caption{Диаграмма IDEF0}
-	\label{fig:idef}	
-\end{figure}
-
-\subsection{Алгоритм работы обработчика}
-
-На рисунке \ref{fig:alg} представлен алгоритм работы обработчика.
+На рисунке \ref{fig:alg} представлен алгоритм работы обработчика устройства ввода.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.65\textwidth]{inc/alg.pdf}
+	\includegraphics[width=\textwidth]{inc/alg.pdf}
 	\caption{Алгоритм работы обработчика}
 	\label{fig:alg}
 \end{figure}
 
-\subsection{Структура ПО}
+\clearpage
 
-На рисунке \ref{fig:arch} представлена структура конечного ПО.
+\subsection{Алгоритм обработки шаблона}
+
+На рисунке \ref{fig:recognition} представлен алгоритм обработки шаблона.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.9\textwidth]{inc/arch.pdf}
-	\caption{Структура ПО}
-	\label{fig:arch}
+	\includegraphics[width=0.7\textwidth]{inc/recognition.pdf}
+	\caption{Алгоритм обработки шаблона}
+	\label{fig:recognition}
 \end{figure}
+
+\clearpage
+
+\subsection{Загружаемый модуля ядра}
+
+На рисунке \ref{fig:module} представлена схема инициализации загружаемого модуля ядра.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.45\textwidth]{inc/init.pdf}
+	\caption{Схема инициализации загружаемого модуля ядра}
+	\label{fig:module}
+\end{figure}
+
 
 \clearpage

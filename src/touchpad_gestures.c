@@ -1,8 +1,6 @@
 #include <linux/input.h>
 #include <linux/module.h>
 #include <linux/proc_fs.h>
-#include <linux/timekeeping.h>
-#include <linux/uaccess.h>
 
 #define DEVICE_NAME "touchpad_gestures"
 #define PROCFS_MAX_SIZE 1000
@@ -21,13 +19,6 @@ static int position_y[MAX_BUFF_SIZE] = {0};
 static int y_end, x_end;
 char proc_buf[PROCFS_MAX_SIZE] = {0};
 
-char cmd1[300] = {0};
-char cmd2[300] = {0};
-char cmd3[300] = {0};
-char cmd4[300] = {0};
-char cmd5[300] = {0};
-char cmd6[300] = {0};
-
 static char *argv[3];
 static char *envp[] = {"HOME=/root",
                        "TERM=linux",
@@ -41,7 +32,7 @@ static char *envp[] = {"HOME=/root",
                        NULL};
 
 static struct state {
-  char execute[300];
+  char execute[MAX_BUFF_SIZE];
 } cmd_state[MAX_GEST_CNT];
 
 struct work_arg_struct {
@@ -58,28 +49,28 @@ static void parse_pattern(struct work_struct *work) {
   argv[2] = NULL;
   if (abs(position_x[0] - x_end) <= 200 && abs(y_end - position_y[0]) > 700) {
     int up = position_y[0] > y_end ? 1 : 0;
-    printk("touchpad_gestures.c: Verical Line, cmd = %s", up ? cmd1 : cmd2);
-    argv[1] = up ? cmd1 : cmd2;
+    printk("touchpad_gestures.c: Verical Line, cmd = %s", up ? cmd_state[0].execute : cmd_state[1].execute);
+    argv[1] = up ? cmd_state[0].execute : cmd_state[1].execute;
     result = call_usermodehelper(argv[0], argv, envp, UMH_WAIT_PROC);
   } else if (abs(y_end - position_y[0]) <= 200 &&
              abs(position_y[count_y / 2] - position_y[0]) <= 100 &&
              abs(position_x[0] - x_end) > 700) {
-    printk("touchpad_gestures.c: Horizonal Line %s", cmd3);
-    argv[1] = cmd3;
+    printk("touchpad_gestures.c: Horizonal Line %s", cmd_state[2].execute);
+    argv[1] = cmd_state[2].execute;
     result = call_usermodehelper(argv[0], argv, envp, UMH_WAIT_PROC);
   } else if (abs(position_x[0] - x_end) > 700 &&
              (position_y[count_y / 2] > position_y[0]) &&
              abs(y_end - position_y[0]) <= 200) {
-    printk("touchpad_gestures.c: V shape %s", cmd4);
-    argv[1] = cmd4;
+    printk("touchpad_gestures.c: V shape %s", cmd_state[3].execute);
+    argv[1] = cmd_state[3].execute;
     result = call_usermodehelper(argv[0], argv, envp, UMH_WAIT_PROC);
   } else if ((position_x[0] > x_end) && (position_y[0] < y_end)) {
-    printk("touchpad_gestures.c: Right Diagonal %s", cmd5);
-    argv[1] = cmd5;
+    printk("touchpad_gestures.c: Right Diagonal %s", cmd_state[4].execute);
+    argv[1] = cmd_state[4].execute;
     result = call_usermodehelper(argv[0], argv, envp, UMH_WAIT_PROC);
   } else if ((position_x[0] < x_end) && (position_y[0] > y_end)) {
-    printk("touchpad_gestures.c: Left Diagonal %s", cmd6);
-    argv[1] = cmd6;
+    printk("touchpad_gestures.c: Left Diagonal %s", cmd_state[5].execute);
+    argv[1] = cmd_state[5].execute;
     result = call_usermodehelper(argv[0], argv, envp, UMH_WAIT_PROC);
   } else {
     printk("touchpad_gestures.c: unknown gesture");
@@ -215,7 +206,7 @@ static ssize_t proc_read(struct file *filp, char __user *buf, size_t size,
 
 static ssize_t proc_write(struct file *fp, const char *buf, size_t len,
                           loff_t *off) {
-  int i, index = 0, idx = 0;
+  int index = 0, idx = 0;
   if (len > PROCFS_MAX_SIZE) {
     return -EFAULT;
   }
@@ -223,7 +214,7 @@ static ssize_t proc_write(struct file *fp, const char *buf, size_t len,
   if (copy_from_user(proc_buf, buf, len)) {
     return -EFAULT;
   }
-  for (i = 0; i < len; i++) {
+  for (int i = 0; i < len; ++i) {
     if (proc_buf[i] == '\n') {
       cmd_state[index].execute[idx++] = '\0';
       idx = 0;
@@ -232,26 +223,8 @@ static ssize_t proc_write(struct file *fp, const char *buf, size_t len,
       cmd_state[index].execute[idx++] = proc_buf[i];
     }
   }
-  for (i = 0; i < MAX_GEST_CNT; i++) {
-    if (i == 0) {
-      strcpy(cmd1, cmd_state[i].execute);
-      printk("touchpad_gestures.c: cmd1 = %s", cmd1);
-    } else if (i == 1) {
-      strcpy(cmd2, cmd_state[i].execute);
-      printk("touchpad_gestures.c: cmd2 = %s", cmd2);
-    } else if (i == 2) {
-      strcpy(cmd3, cmd_state[i].execute);
-      printk("touchpad_gestures.c: cmd3 = %s", cmd3);
-    } else if (i == 3) {
-      strcpy(cmd4, cmd_state[i].execute);
-      printk("touchpad_gestures.c: cmd4 = %s", cmd4);
-    } else if (i == 4) {
-      strcpy(cmd5, cmd_state[i].execute);
-      printk("touchpad_gestures.c: cmd5 = %s", cmd5);
-    } else if (i == 5) {
-      strcpy(cmd6, cmd_state[i].execute);
-      printk("touchpad_gestures.c: cmd6 = %s", cmd6);
-    }
+  for (int i = 0; i < MAX_GEST_CNT; ++i) {
+    printk("touchpad_gestures.c: cmd %d = %s", i+1, cmd_state[i].execute);
   }
   printk("touchpad_gestures.c: cmd configuration applied");
 
@@ -298,7 +271,6 @@ static int __init touchpad_gest_init(void) {
   printk("touchpad_gestures.c: insmod complete");
   return 0;
 
-err_exit:
   return error;
 }
 
